@@ -68,3 +68,8 @@ npm install
 ```
 npm start
 ```
+## 📸 Output
+
+| Chat Window 1 | Chat Window 2 |
+|---------------|----------------|
+| <img src="./Assets/Image1.png" width="100%" /> | <img src="./Assets/Image2.png" width="100%" /> |

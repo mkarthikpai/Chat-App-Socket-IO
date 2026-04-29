@@ -103,3 +103,14 @@
 .send-btn:hover {
   background: #1da851;
 }
+
+.empty-text {
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+  margin-top: 20px;
+}
+
+.timestamp {
+  font-size: 12px;
+}

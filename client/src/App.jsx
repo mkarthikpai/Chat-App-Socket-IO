@@ -1,21 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import io from "socket.io-client";
-import { useEffect } from "react";
+
 const socket = io.connect("http://localhost:3000");
 
 function App() {
   const [room, setRoom] = useState("");
   const [message, setMessage] = useState("");
-  const [messageReceived, setMessageReceived] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  const chatEndRef = useRef(null); // auto-scroll
 
   useEffect(() => {
     socket.on("receive_message", (data) => {
-      console.log(data);
-      setMessageReceived(data.message);
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: data.message,
+          type: "received",
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        },
+      ]);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+
+    return () => {
+      socket.off("receive_message");
+    };
+  }, []);
+
+  // auto-scroll
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const joinRoom = () => {
     if (room !== "") {
@@ -24,8 +43,23 @@ function App() {
   };
 
   const sendMessage = () => {
-    socket.emit("send_message", { message: message, room });
-    setMessage("");
+    if (message !== "") {
+      socket.emit("send_message", { message, room });
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: message,
+          type: "sent",
+          time: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        },
+      ]);
+
+      setMessage("");
+    }
   };
 
   return (
@@ -36,9 +70,17 @@ function App() {
         </div>
 
         <div className="chat-body">
-          <div className="message received">
-            <p>{messageReceived || "No messages yet..."}</p>
-          </div>
+          {messages.length === 0 ? (
+            <p className="empty-text">No messages yet...</p>
+          ) : (
+            messages.map((msg, index) => (
+              <div key={index} className={`message ${msg.type}`}>
+                <p>{msg.text}</p>
+                <span className="timestamp">{msg.time}</span>
+              </div>
+            ))
+          )}
+          <div ref={chatEndRef} />
         </div>
 
         <div className="chat-controls">

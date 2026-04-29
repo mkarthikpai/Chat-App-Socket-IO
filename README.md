@@ -43,3 +43,28 @@ main.jsx and index.js
 | `join_room`      | Join a specific chat room   |
 | `send_message`   | Send message to server      |
 | `receive_message`| Receive message from server |
+
+## ▶️ Getting Started
+
+### 1. Clone the Repository
+
+```
+git clone https://github.com/mkarthikpai/Chat-App-Socket-IO.git
+cd Chat-App-Socket-IO
+```
+### 2. Install Dependencies
+
+#### Client
+```
+cd client
+npm install
+```
+#### Server
+```
+cd server
+npm install
+```
+### Run Both
+```
+npm start
+```
